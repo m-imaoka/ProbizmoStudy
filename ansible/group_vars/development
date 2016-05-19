@@ -1,0 +1,14 @@
+---
+# vi: set ft=yaml :
+
+#### base settings
+
+env: development
+
+
+#### application settings
+
+# PostgreSQL
+pg_db: "cleaning_duty"
+pg_user: "cleaning_duty"
+pg_pass: "P@ssw0rd"

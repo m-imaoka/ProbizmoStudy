@@ -1,0 +1,19 @@
+# development
+
+[web]
+192.168.56.100
+
+[app]
+192.168.56.100
+
+[db]
+192.168.56.100
+
+[dev]
+192.168.56.100
+
+[development:children]
+web
+app
+db
+dev

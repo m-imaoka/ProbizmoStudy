@@ -1,0 +1,13 @@
+---
+- name: check nginx repo
+  stat: path=/etc/pki/rpm-gpg/RPM-GPG-KEY-nginx
+  register: is_nginx_rpm_path
+
+- name: enable nginx repos
+  yum: state=present name=http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+  tags: [ 'nginx' ]
+  when: not is_nginx_rpm_path.stat.exists
+
+- name: install nginx
+  yum: state=latest name=nginx
+  tags: [ 'nginx' ]

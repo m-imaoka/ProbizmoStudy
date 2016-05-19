@@ -1,0 +1,25 @@
+---
+- hosts: all
+  become: yes
+  roles:
+    - git
+    - pip
+
+- hosts: web
+  become: yes
+  roles:
+    - nginx
+
+- hosts: app
+  become: yes
+  roles:
+
+- hosts: db
+  become: yes
+  roles:
+    - postgresql
+
+- hosts: dev
+  become: yes
+  roles:
+

@@ -1,0 +1,15 @@
+---
+- name: install dependency packages
+  yum: name={{ item }} state=latest
+  tags: [ 'pip' ]
+  with_items:
+    - python-devel
+
+- name: install pip
+  yum: name=python-pip state=latest
+  tags: [ 'pip' ]
+
+- name: upgrade pip
+  pip: name=pip extra_args='--upgrade'
+  tags: [ 'pip' ]
+

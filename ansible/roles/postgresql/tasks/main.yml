@@ -1,0 +1,43 @@
+---
+- name: install psycopg2
+  pip: name=psycopg2
+  tags: [ 'postgresql' ]
+
+- name: check postgresql repo
+  stat: path=/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-95
+  register: is_postgresql_rpm_path
+
+- name: enable postgresql repos
+  yum: state=present name=https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-7-x86_64/pgdg-centos95-9.5-2.noarch.rpm
+  tags: [ 'postgresql' ]
+  when: not is_postgresql_rpm_path.stat.exists
+
+- name: install postgresql
+  yum: name={{ item }} state=latest
+  tags: [ 'postgresql' ]
+  with_items:
+    - postgresql-server
+    - postgresql-devel
+
+- name: check postgresql initialized db
+  shell: /usr/pgsql-9.5/bin/postgresql95-check-db-dir /var/lib/pgsql/9.5/data
+  register: initialized
+  ignore_errors: True
+
+- name: postgresql initdb
+  shell: /usr/pgsql-9.5/bin/postgresql95-setup initdb
+  when: initialized|failed
+
+- name: start postgresql
+  service: name=postgresql-9.5 state=started  enabled=yes
+  tags: [ 'postgresql' ]
+
+- name: setup pg_hba.conf
+  template: src=pg_hba.conf.j2 dest=/var/lib/pgsql/9.5/data/pg_hba.conf owner=postgres group=postgres mode=0600
+  tags: [ 'postgresql' ]
+
+- name: create postgresql role
+  sudo: yes
+  sudo_user: postgres
+  postgresql_user: name={{ pg_user }} password={{ pg_pass }} role_attr_flags=CREATEDB,NOSUPERUSER
+  tags: [ 'postgresql' ]

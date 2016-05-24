@@ -3,7 +3,6 @@
   become: yes
   roles:
     - git
-    - pip
 
 - hosts: web
   become: yes
@@ -13,6 +12,7 @@
 - hosts: app
   become: yes
   roles:
+    - ruby
 
 - hosts: db
   become: yes

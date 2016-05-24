@@ -1,0 +1,8 @@
+---
+rbenv:
+  user: "vagrant"
+  dest: "~/.rbenv"
+  version: "v1.0.0"
+ruby_build:
+  dest: "~/.rbenv/plugins/ruby-build"
+  version: "v20160426"

@@ -1,0 +1,46 @@
+---
+- name: check exists rbenv
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  stat: path={{ rbenv.dest }}
+  register: is_rbenv_file
+
+- name: install rbenv
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  git: repo=https://github.com/sstephenson/rbenv.git
+       version={{ rbenv.version }}
+       dest={{ rbenv.dest }}
+  when: not is_rbenv_file.stat.exists
+  tags: rbenv
+
+- name: check exists ruby-build
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  stat: path={{ ruby_build.dest }}
+  register: is_ruby_build_file
+
+- name: install ruby-build plugin for rbenv
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  git: repo=https://github.com/sstephenson/ruby-build.git
+       version={{ ruby_build.version }}
+       dest={{ ruby_build.dest }}
+  when: not is_ruby_build_file.stat.exists
+  tags: rbenv
+
+- name: add rbenv path
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  lineinfile: >
+    dest="~/.bash_profile"
+    line="export PATH={{ rbenv.dest }}/bin:$PATH"
+  tags: rbenv
+
+- name: init rbenv
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  lineinfile: >
+    dest="~/.bash_profile"
+    line='eval "$(rbenv init -)"'
+  tags: rbenv

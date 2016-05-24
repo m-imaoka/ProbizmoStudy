@@ -1,0 +1,20 @@
+---
+- name: install dependency packages
+  yum: state=latest name={{ item }}
+  with_items:
+    - openssl-devel
+    - gcc
+    - bzip2
+    - libyaml-devel
+    - libffi-devel
+    - readline-devel
+    - zlib-devel
+    - gdbm-devel
+    - ncurses-devel
+  tags: 'ruby'
+
+- name: "install ruby"
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  shell: "{{ rbenv.dest}}/bin/rbenv install {{ ruby.version }}"
+  tags: rbenv

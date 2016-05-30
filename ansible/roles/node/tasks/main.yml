@@ -1,0 +1,12 @@
+---
+- name: download setup shell for nodejs
+  get_url: url="https://rpm.nodesource.com/setup_6.x" dest="/tmp/setup_node.sh" mode=0755
+  tags: 'node'
+
+- name: enable nodejs repos
+  shell: /tmp/setup_node.sh
+  tags: 'node'
+
+- name: install nodejs
+  yum: name=nodejs state=latest
+  tags: 'node'

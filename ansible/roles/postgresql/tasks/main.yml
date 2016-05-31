@@ -16,12 +16,12 @@
     - postgresql95-devel
 
 - name: check postgresql initialized db
-  shell: /usr/pgsql-9.5/bin/postgresql95-check-db-dir /var/lib/pgsql/9.5/data
+  shell: "{{ pg.bin }}/postgresql95-check-db-dir {{ pg.data }}"
   register: initialized
   ignore_errors: True
 
 - name: postgresql initdb
-  shell: /usr/pgsql-9.5/bin/postgresql95-setup initdb
+  shell: "{{ pg.bin }}/postgresql95-setup initdb"
   when: initialized|failed
 
 - name: start postgresql
@@ -29,7 +29,7 @@
   tags: [ 'postgresql' ]
 
 - name: setup pg_hba.conf
-  template: src=pg_hba.conf.j2 dest=/var/lib/pgsql/9.5/data/pg_hba.conf owner=postgres group=postgres mode=0600
+  template: src=pg_hba.conf.j2 dest={{ pg.data }}/pg_hba.conf owner=postgres group=postgres mode=0600
   tags: [ 'postgresql' ]
 
 - name: install psycopg2
@@ -39,5 +39,5 @@
 - name: create postgresql role
   become: yes
   become_user: postgres
-  postgresql_user: name={{ pg_user }} password={{ pg_pass }} role_attr_flags=CREATEDB,NOSUPERUSER
+  postgresql_user: name={{ pg.user }} password={{ pg.password }} role_attr_flags=CREATEDB,NOSUPERUSER
   tags: [ 'postgresql' ]

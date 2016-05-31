@@ -1,0 +1,7 @@
+---
+pg:
+  bin: "/usr/pgsql-9.5/bin"
+  data: "/var/lib/pgsql/9.5/data"
+  db: "cleaning_duty"
+  user: "cleaning_duty"
+  password: "P@ssw0rd"

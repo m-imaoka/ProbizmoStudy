@@ -1,8 +1,4 @@
 ---
-- name: install psycopg2
-  pip: name=psycopg2
-  tags: [ 'postgresql' ]
-
 - name: check postgresql repo
   stat: path=/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-95
   register: is_postgresql_rpm_path
@@ -16,8 +12,8 @@
   yum: name={{ item }} state=latest
   tags: [ 'postgresql' ]
   with_items:
-    - postgresql-server
-    - postgresql-devel
+    - postgresql95-server
+    - postgresql95-devel
 
 - name: check postgresql initialized db
   shell: /usr/pgsql-9.5/bin/postgresql95-check-db-dir /var/lib/pgsql/9.5/data
@@ -34,6 +30,10 @@
 
 - name: setup pg_hba.conf
   template: src=pg_hba.conf.j2 dest=/var/lib/pgsql/9.5/data/pg_hba.conf owner=postgres group=postgres mode=0600
+  tags: [ 'postgresql' ]
+
+- name: install psycopg2
+  pip: name=psycopg2
   tags: [ 'postgresql' ]
 
 - name: create postgresql role

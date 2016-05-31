@@ -13,8 +13,15 @@
     - ncurses-devel
   tags: 'ruby'
 
+- name: check exists ruby
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  stat: path="{{ rbenv.dest }}/versions/{{ ruby.version }}"
+  register: is_ruby_file
+
 - name: "install ruby"
   become: yes
   become_user: "{{ rbenv.user }}"
   shell: "{{ rbenv.dest}}/bin/rbenv install {{ ruby.version }}"
+  when: not is_ruby_file.stat.exists
   tags: rbenv

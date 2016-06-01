@@ -24,13 +24,18 @@
   shell: "{{ pg.bin }}/postgresql95-setup initdb"
   when: initialized|failed
 
-- name: start postgresql
-  service: name=postgresql-9.5 state=started  enabled=yes
-  tags: [ 'postgresql' ]
+- name: check postgresql service enabled
+  stat: path=/etc/systemd/system/multi-user.target.wants/postgresql-9.5.service
+  register: is_postgresql_enabled_path
 
 - name: setup pg_hba.conf
   template: src=pg_hba.conf.j2 dest={{ pg.data }}/pg_hba.conf owner=postgres group=postgres mode=0600
   tags: [ 'postgresql' ]
+
+- name: start postgresql
+  service: name=postgresql-9.5 state=started  enabled=yes
+  tags: [ 'postgresql' ]
+  when: not is_postgresql_enabled_path.stat.exists
 
 - name: install psycopg2
   pip: name=psycopg2

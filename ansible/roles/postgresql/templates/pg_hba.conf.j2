@@ -5,10 +5,10 @@ local   all             all                                     peer
 local   {{ pg_db }}     {{ pg_user }}                           password
 # IPv4 local connections:
 host    all             all             127.0.0.1/32            ident
-local   {{ pg_db }}     {{ pg_user }}   127.0.0.1/32            password
+host    {{ pg_db }}     {{ pg_user }}   127.0.0.1/32            password
 # IPv6 local connections:
 host    all             all             ::1/128                 ident
-local   {{ pg_db }}     {{ pg_user }}   ::1/128                 password
+host    {{ pg_db }}     {{ pg_user }}   ::1/128                 password
 # Allow replication connections from localhost, by a user with the
 # replication privilege.
 #local   replication     postgres                                peer

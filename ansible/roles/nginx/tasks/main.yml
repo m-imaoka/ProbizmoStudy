@@ -11,3 +11,12 @@
 - name: install nginx
   yum: state=latest name=nginx
   tags: [ 'nginx' ]
+
+- name: check nginx service enabled
+  stat: path=/etc/systemd/system/multi-user.target.wants/nginx.service
+  register: is_nginx_enabled_path
+
+- name: start nginx
+  service: name=nginx state=started  enabled=yes
+  tags: [ 'nginx' ]
+  when: not is_nginx_enabled_path.stat.exists

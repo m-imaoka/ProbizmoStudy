@@ -38,6 +38,8 @@
   when: not is_postgresql_enabled_path.stat.exists
 
 - name: install psycopg2
+  environment:
+    PATH: "{{ pg.bin }}:{{ ansible_env.PATH }}"
   pip: name=psycopg2
   tags: [ 'postgresql' ]
 

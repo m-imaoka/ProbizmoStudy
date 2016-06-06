@@ -25,3 +25,9 @@
   shell: "{{ rbenv.dest}}/bin/rbenv install {{ ruby.version }}"
   when: not is_ruby_file.stat.exists
   tags: rbenv
+
+- name: "set using ruby version"
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  shell: "{{ rbenv.dest }}/bin/rbenv global {{ ruby.version }}"
+  tags: rbenv

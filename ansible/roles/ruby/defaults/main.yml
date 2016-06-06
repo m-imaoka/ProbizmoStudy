@@ -1,4 +1,5 @@
 ---
 ruby:
   version: "2.3.0"
-ruby_build:
+bundler:
+  directory: "~/.bundle"

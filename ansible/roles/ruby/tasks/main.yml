@@ -24,10 +24,29 @@
   become_user: "{{ rbenv.user }}"
   shell: "{{ rbenv.dest}}/bin/rbenv install {{ ruby.version }}"
   when: not is_ruby_file.stat.exists
-  tags: rbenv
+  tags: ruby
 
 - name: "set using ruby version"
   become: yes
   become_user: "{{ rbenv.user }}"
   shell: "{{ rbenv.dest }}/bin/rbenv global {{ ruby.version }}"
-  tags: rbenv
+  tags: ruby
+
+- name: check exists .bundle directory
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  stat: path={{ bundler.directory }}
+  register: is_bundler_directory
+
+- name: create .bundle directory
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  file: path={{ bundler.directory }} state=directory mode=0755
+  when: not is_bundler_directory.stat.exists
+  tags: ruby
+
+- name: "config pg gem build settings"
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  template: src=config.j2 dest={{ bundler.directory }}/config mode=0664
+  tags: ruby

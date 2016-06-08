@@ -1,0 +1,3 @@
+---
+nginx:
+  root: "/srv/nginx/html"

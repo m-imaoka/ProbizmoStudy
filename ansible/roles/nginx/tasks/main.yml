@@ -1,0 +1,50 @@
+---
+- name: install dependency packages
+  yum: state=latest name={{ item }}
+  with_items:
+    - policycoreutils-python
+    - policycoreutils-devel
+  tags: [ 'nginx' ]
+
+- name: check nginx repo
+  stat: path=/etc/pki/rpm-gpg/RPM-GPG-KEY-nginx
+  register: is_nginx_rpm_path
+
+- name: enable nginx repos
+  yum: state=present name=http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+  tags: [ 'nginx' ]
+  when: not is_nginx_rpm_path.stat.exists
+
+- name: install nginx
+  yum: state=latest name=nginx
+  tags: [ 'nginx' ]
+
+- name: check exists nginx root directory
+  stat: path={{ nginx.root }}
+  register: is_nginx_root_directory
+
+- name: create nginx root directory
+  file: path={{ nginx.root }} state=directory owner=vagrant group=vagrant mode=0755
+  when: not is_nginx_root_directory.stat.exists
+  tags: [ 'nginx' ]
+
+- name: setup default.conf
+  template: src=default.conf.j2 dest=/etc/nginx/conf.d/default.conf owner=root group=root mode=0644
+  tags: [ 'nginx' ]
+
+- name: copy nginx.pp file
+  copy: src=nginx.pp dest=~/nginx.pp mode=0644
+  tags: [ 'nginx' ]
+
+- name: setup selinux policy
+  shell: "semodule -i ~/nginx.pp"
+  tags: [ 'nginx' ]
+
+- name: check nginx service enabled
+  stat: path=/etc/systemd/system/multi-user.target.wants/nginx.service
+  register: is_nginx_enabled_path
+
+- name: start nginx
+  service: name=nginx state=started  enabled=yes
+  tags: [ 'nginx' ]
+  when: not is_nginx_enabled_path.stat.exists

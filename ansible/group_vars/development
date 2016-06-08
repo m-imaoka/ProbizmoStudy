@@ -1,0 +1,27 @@
+---
+# vi: set ft=yaml :
+
+#### base settings
+
+env: development
+
+
+#### application settings
+
+## rbenv
+# rbenv:
+#   user: "vagrant"
+#   dest: "~/.rbenv"
+#   version: "v1.0.0"
+# ruby_build:
+#   dest: "~/.rbenv/plugings/ruby-build"
+#   version: "v20160426"
+
+## Ruby
+# ruby:
+#   version: "2.3.0"
+
+## PostgreSQL
+pg_db: "cleaning_duty"
+pg_user: "cleaning_duty"
+pg_pass: "P@ssw0rd"

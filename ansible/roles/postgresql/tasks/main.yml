@@ -1,0 +1,50 @@
+---
+- name: check postgresql repo
+  stat: path=/etc/pki/rpm-gpg/RPM-GPG-KEY-PGDG-95
+  register: is_postgresql_rpm_path
+
+- name: enable postgresql repos
+  yum: state=present name=https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-7-x86_64/pgdg-centos95-9.5-2.noarch.rpm
+  tags: [ 'postgresql' ]
+  when: not is_postgresql_rpm_path.stat.exists
+
+- name: install postgresql
+  yum: name={{ item }} state=latest
+  tags: [ 'postgresql' ]
+  with_items:
+    - postgresql95-server
+    - postgresql95-devel
+
+- name: check postgresql initialized db
+  shell: "{{ pg.bin }}/postgresql95-check-db-dir {{ pg.data }}"
+  register: initialized
+  ignore_errors: True
+
+- name: postgresql initdb
+  shell: "{{ pg.bin }}/postgresql95-setup initdb"
+  when: initialized|failed
+
+- name: check postgresql service enabled
+  stat: path=/etc/systemd/system/multi-user.target.wants/postgresql-9.5.service
+  register: is_postgresql_enabled_path
+
+- name: setup pg_hba.conf
+  template: src=pg_hba.conf.j2 dest={{ pg.data }}/pg_hba.conf owner=postgres group=postgres mode=0600
+  tags: [ 'postgresql' ]
+
+- name: start postgresql
+  service: name=postgresql-9.5 state=started  enabled=yes
+  tags: [ 'postgresql' ]
+  when: not is_postgresql_enabled_path.stat.exists
+
+- name: install psycopg2
+  environment:
+    PATH: "{{ pg.bin }}:{{ ansible_env.PATH }}"
+  pip: name=psycopg2
+  tags: [ 'postgresql' ]
+
+- name: create postgresql role
+  become: yes
+  become_user: postgres
+  postgresql_user: name={{ pg.user }} password={{ pg.password }} role_attr_flags=CREATEDB,NOSUPERUSER
+  tags: [ 'postgresql' ]

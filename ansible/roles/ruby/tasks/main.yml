@@ -1,0 +1,52 @@
+---
+- name: install dependency packages
+  yum: state=latest name={{ item }}
+  with_items:
+    - openssl-devel
+    - gcc
+    - bzip2
+    - libyaml-devel
+    - libffi-devel
+    - readline-devel
+    - zlib-devel
+    - gdbm-devel
+    - ncurses-devel
+  tags: 'ruby'
+
+- name: check exists ruby
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  stat: path="{{ rbenv.dest }}/versions/{{ ruby.version }}"
+  register: is_ruby_file
+
+- name: "install ruby"
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  shell: "{{ rbenv.dest}}/bin/rbenv install {{ ruby.version }}"
+  when: not is_ruby_file.stat.exists
+  tags: ruby
+
+- name: "set using ruby version"
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  shell: "{{ rbenv.dest }}/bin/rbenv global {{ ruby.version }}"
+  tags: ruby
+
+- name: check exists .bundle directory
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  stat: path={{ bundler.directory }}
+  register: is_bundler_directory
+
+- name: create .bundle directory
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  file: path={{ bundler.directory }} state=directory mode=0755
+  when: not is_bundler_directory.stat.exists
+  tags: ruby
+
+- name: "config pg gem build settings"
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  template: src=config.j2 dest={{ bundler.directory }}/config mode=0664
+  tags: ruby

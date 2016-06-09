@@ -6,41 +6,44 @@
 
   https://www.vagrantup.com/
 
-2. Clone this project.
+2. Install vagrant-vbguest plugin.
+  ```
+  vagrant plugin install vagrant-vbguest
+  ```
+3. Clone this project.
 
   ```
   git clone https://github.com/m-imaoka/ProbizmoStudy.git
   ```
 
-3. Move current directory to ProbizmoStudy.
+4. Move current directory to ProbizmoStudy.
 
   ```
   cd [ProbizmoStudy's path]
   ```
-4. Run Vagrant.
+5. Run Vagrant.
 
   ```
   vagrant up
   ```
+6. Reinstall virtualbox guest additions. (optional)
 
-5. Start docker containers. (for server application)
-
-  ```
-  docker start postgres
-  docker start cleaning-duty
-  ```
-
-6. Start docker containers. (for client application)
-  ```
-  docker start cleaning-duty-web-client
-  docker start nginx
-  ```
-  cleaning-duty-web-client container is not required for running client application.
-  but it is required for build client application.
-
-7. Attach docker container. (if you need to use shell script in container)
+    Insert VBoxGuestAdditions.iso into CD/DVD storage.
 
   ```
-  docker exec -it cleaning-duty /bin/bash
-  docker exec -it cleaning-duty-web-client /bin/bash
+  vagrant ssh
+  sudo mount /dev/cdrom /mnt
+  sudo /mnt/VBoxLinuxAdditions.run
+  exit
+  vagrant reload
+  ```
+7. Provision virtual machine.
+
+  ```
+  vagrant provision
+  ```
+8. Login virtual machine.
+
+  ```
+  vagrant ssh
   ```

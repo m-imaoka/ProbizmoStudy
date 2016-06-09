@@ -16,12 +16,24 @@ env: development
 # ruby_build:
 #   dest: "~/.rbenv/plugings/ruby-build"
 #   version: "v20160426"
+# rbenv_default_gems:
+#   dest: "~/.rbenv/plugins/rbenv_default_gems"
+#   version: "v1.0.0"
 
 ## Ruby
 # ruby:
 #   version: "2.3.0"
+# bundler:
+#   directory: "~/.bundle"
 
 ## PostgreSQL
-pg_db: "cleaning_duty"
-pg_user: "cleaning_duty"
-pg_pass: "P@ssw0rd"
+# pg:
+#   bin: "/usr/pgsql-9.5/bin"
+#   data: "/var/lib/pgsql/9.5/data"
+#   db: "cleaning_duty"
+#   user: "cleaning_duty"
+#   password: "P@ssw0rd"
+
+## nginx
+# nginx:
+#   root: "/srv/nginx/html"

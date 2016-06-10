@@ -22,14 +22,20 @@
 - name: "install ruby"
   become: yes
   become_user: "{{ rbenv.user }}"
-  shell: "{{ rbenv.dest}}/bin/rbenv install {{ ruby.version }}"
+  shell: bash -lc "rbenv install {{ ruby.version }}"
   when: not is_ruby_file.stat.exists
   tags: ruby
 
 - name: "set using ruby version"
   become: yes
   become_user: "{{ rbenv.user }}"
-  shell: "{{ rbenv.dest }}/bin/rbenv global {{ ruby.version }}"
+  shell: bash -lc "rbenv global {{ ruby.version }}"
+  tags: ruby
+
+- name: install bundler gem
+  become: yes
+  become_user: "{{ rbenv.user }}"
+  shell: bash -lc "gem install bundler"
   tags: ruby
 
 - name: check exists .bundle directory

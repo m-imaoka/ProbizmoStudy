@@ -29,27 +29,6 @@
   when: not is_ruby_build_file.stat.exists
   tags: rbenv
 
-- name: check exists rbenv-default-gems
-  become: yes
-  become_user: "{{ rbenv.user }}"
-  stat: path={{ rbenv_default_gems.dest }}
-  register: is_rbenv_default_gems_file
-
-- name: install rbenv-default-gems
-  become: yes
-  become_user: "{{ rbenv.user }}"
-  git: repo=https://github.com/sstephenson/rbenv-default-gems.git
-       version={{ rbenv_default_gems.version }}
-       dest={{ rbenv_default_gems.dest }}
-  when: not is_rbenv_default_gems_file.stat.exists
-  tags: rbenv
-
-- name: copy default-gems file
-  become: yes
-  become_user: "{{ rbenv.user }}"
-  copy: src=default-gems dest={{ rbenv.dest }}/default-gems owner={{ rbenv.user }} group={{ rbenv.user }} mode=0644
-  tags: rbenv
-
 - name: add rbenv path
   become: yes
   become_user: "{{ rbenv.user }}"

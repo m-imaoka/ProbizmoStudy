@@ -24,7 +24,7 @@
 5. add inventory file
 
   ```
-  cp developement.sample development
+  cp ansible/developement.sample ansible/development
   ```
 6. Run Vagrant.
 

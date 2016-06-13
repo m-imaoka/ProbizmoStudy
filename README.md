@@ -21,12 +21,17 @@
   ```
   cd [ProbizmoStudy's path]
   ```
-5. Run Vagrant.
+5. add inventory file
+
+  ```
+  cp developement.sample development
+  ```
+6. Run Vagrant.
 
   ```
   vagrant up
   ```
-6. Reinstall virtualbox guest additions. (optional)
+7. Reinstall virtualbox guest additions. (optional)
 
     Insert VBoxGuestAdditions.iso into CD/DVD storage.
 
@@ -37,12 +42,12 @@
   exit
   vagrant reload
   ```
-7. Provision virtual machine.
+8. Provision virtual machine.
 
   ```
   vagrant provision
   ```
-8. Login virtual machine.
+9. Login virtual machine.
 
   ```
   vagrant ssh

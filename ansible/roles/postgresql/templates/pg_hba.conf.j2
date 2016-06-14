@@ -1,14 +1,14 @@
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
 # "local" is for Unix domain socket connections only
+local   all             {{ pg.user }}                           password
 local   all             all                                     peer
-local   {{ pg.db }}     {{ pg.user }}                           password
 # IPv4 local connections:
+host    all             {{ pg.user }}   127.0.0.1/32            password
 host    all             all             127.0.0.1/32            ident
-host    {{ pg.db }}     {{ pg.user }}   127.0.0.1/32            password
 # IPv6 local connections:
+host    all             {{ pg.user }}   ::1/128                 password
 host    all             all             ::1/128                 ident
-host    {{ pg.db }}     {{ pg.user }}   ::1/128                 password
 # Allow replication connections from localhost, by a user with the
 # replication privilege.
 #local   replication     postgres                                peer
